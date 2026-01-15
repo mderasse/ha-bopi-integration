@@ -1,0 +1,20 @@
+{
+    "domain": "bopi",
+    "name": "BoPi",
+    "codeowners": [
+        "@mderasse"
+    ],
+    "config_flow": true,
+    "dependencies": [],
+    "documentation": "https://github.com/mderasse/ha-bopi-integration/blob/main/README.md",
+    "homekit": {},
+    "iot_class": "local_polling",
+    "issue_tracker": "https://github.com/mderasse/ha-bopi-integration/issues",
+    "quality_scale": "bronze",
+    "requirements": [
+        "meetbopi==1.0.1"
+    ],
+    "ssdp": [],
+    "version": "0.0.1",
+    "zeroconf": []
+}

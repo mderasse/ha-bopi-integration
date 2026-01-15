@@ -1,0 +1,96 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Device is already configured",
+            "reconfigure_successful": "Reconfiguration successful"
+        },
+        "error": {
+            "cannot_connect": "Failed to connect",
+            "connection_timeout": "Connection Timeout",
+            "invalid_config": "Invalid configuration",
+            "invalid_host": "Invalid host",
+            "invalid_port": "Invalid port",
+            "invalid_timeout": "Invalid timeout",
+            "unknown": "Unexpected error"
+        },
+        "step": {
+            "reconfigure": {
+                "data": {
+                    "host": "Host",
+                    "port": "Port",
+                    "timeout": "Timeout"
+                }
+            },
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "port": "Port",
+                    "timeout": "Timeout"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "boxhumidity": {
+                "name": "Box humidity"
+            },
+            "boxtemp": {
+                "name": "Box temperature"
+            },
+            "phvalue": {
+                "name": "pH value"
+            },
+            "redoxvalue": {
+                "name": "Redox value"
+            },
+            "temp1": {
+                "name": "Temperature 1"
+            },
+            "temp2": {
+                "name": "Temperature 2"
+            },
+            "uptime": {
+                "name": "Uptime"
+            }
+        },
+        "switch": {
+            "pool_lights": {
+                "name": "Pool lights"
+            },
+            "pool_pump": {
+                "name": "Pool pump"
+            },
+            "relay1": {
+                "name": "Relay 1"
+            },
+            "relay2": {
+                "name": "Relay 2"
+            },
+            "relay3": {
+                "name": "Relay 3"
+            },
+            "relay4": {
+                "name": "Relay 4"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "scan_interval": "Scan Interval (seconds)"
+                },
+                "description": "Amend your options.",
+                "title": "BoPi Integration Options"
+            }
+        }
+    },
+    "services": {
+        "refresh": {
+            "description": "Immediately refresh all BoPi sensor data from the device",
+            "name": "Refresh sensors"
+        }
+    },
+    "title": "BoPi Integration"
+}

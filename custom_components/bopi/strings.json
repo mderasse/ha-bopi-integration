@@ -1,0 +1,96 @@
+{
+    "title": "BoPi Integration",
+    "config": {
+        "abort": {
+            "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
+            "reconfigure_successful": "Reconfiguration successful"
+        },
+        "error": {
+            "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+            "connection_timeout": "Connection Timeout",
+            "invalid_config": "Invalid configuration",
+            "invalid_host": "Invalid host",
+            "invalid_port": "Invalid port",
+            "invalid_timeout": "Invalid timeout",
+            "unknown": "[%key:common::config_flow::error::unknown%]"
+        },
+        "step": {
+            "reconfigure": {
+                "data": {
+                    "host": "[%key:common::config_flow::data::host%]",
+                    "port": "[%key:common::config_flow::data::port%]",
+                    "timeout": "Timeout"
+                }
+            },
+            "user": {
+                "data": {
+                    "host": "[%key:common::config_flow::data::host%]",
+                    "port": "[%key:common::config_flow::data::port%]",
+                    "timeout": "Timeout"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "scan_interval": "Scan Interval (seconds)"
+                },
+                "description": "Amend your options.",
+                "title": "BoPi Integration Options"
+            }
+        }
+    },
+    "services": {
+        "refresh": {
+            "name": "Refresh sensors",
+            "description": "Immediately refresh all BoPi sensor data from the device"
+        }
+    },
+    "entity": {
+        "sensor": {
+            "temp1": {
+                "name": "Temperature 1"
+            },
+            "temp2": {
+                "name": "Temperature 2"
+            },
+            "boxtemp": {
+                "name": "Box temperature"
+            },
+            "boxhumidity": {
+                "name": "Box humidity"
+            },
+            "phvalue": {
+                "name": "pH value"
+            },
+            "redoxvalue": {
+                "name": "Redox value"
+            },
+            "uptime": {
+                "name": "Uptime"
+            }
+        },
+        "switch": {
+            "pool_pump": {
+                "name": "Pool pump"
+            },
+            "pool_lights": {
+                "name": "Pool lights"
+            },
+            "relay1": {
+                "name": "Relay 1"
+            },
+            "relay2": {
+                "name": "Relay 2"
+            },
+            "relay3": {
+                "name": "Relay 3"
+            },
+            "relay4": {
+                "name": "Relay 4"
+            }
+        }
+    }
+}

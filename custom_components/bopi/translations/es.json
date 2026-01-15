@@ -1,0 +1,96 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El dispositivo ya está configurado",
+            "reconfigure_successful": "Reconfiguración correcta"
+        },
+        "error": {
+            "cannot_connect": "No se pudo conectar",
+            "connection_timeout": "Tiempo de conexión agotado",
+            "invalid_config": "Configuración no válida",
+            "invalid_host": "Host no válido",
+            "invalid_port": "Puerto no válido",
+            "invalid_timeout": "Tiempo de espera no válido",
+            "unknown": "Error inesperado"
+        },
+        "step": {
+            "reconfigure": {
+                "data": {
+                    "host": "Host",
+                    "port": "Puerto",
+                    "timeout": "Tiempo de espera"
+                }
+            },
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "port": "Puerto",
+                    "timeout": "Tiempo de espera"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "boxhumidity": {
+                "name": "Humedad de la caja"
+            },
+            "boxtemp": {
+                "name": "Temperatura de la caja"
+            },
+            "phvalue": {
+                "name": "Valor de pH"
+            },
+            "redoxvalue": {
+                "name": "Valor redox"
+            },
+            "temp1": {
+                "name": "Temperatura 1"
+            },
+            "temp2": {
+                "name": "Temperatura 2"
+            },
+            "uptime": {
+                "name": "Tiempo de actividad"
+            }
+        },
+        "switch": {
+            "pool_lights": {
+                "name": "Luces de la piscina"
+            },
+            "pool_pump": {
+                "name": "Bomba de la piscina"
+            },
+            "relay1": {
+                "name": "Relé 1"
+            },
+            "relay2": {
+                "name": "Relé 2"
+            },
+            "relay3": {
+                "name": "Relé 3"
+            },
+            "relay4": {
+                "name": "Relé 4"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "scan_interval": "Intervalo de sondeo (segundos)"
+                },
+                "description": "Modifica tus opciones.",
+                "title": "Opciones de la integración BoPi"
+            }
+        }
+    },
+    "services": {
+        "refresh": {
+            "description": "Actualiza inmediatamente todos los datos de los sensores BoPi desde el dispositivo",
+            "name": "Actualizar sensores"
+        }
+    },
+    "title": "Integración BoPi"
+}

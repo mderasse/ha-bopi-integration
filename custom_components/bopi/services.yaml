@@ -1,0 +1,4 @@
+---
+refresh:
+  name: Refresh sensors
+  description: Immediately refresh all BoPi sensor data from the device, without waiting for the next scheduled update.

@@ -1,0 +1,96 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "L'intégration est déjà configuré",
+            "reconfigure_successful": "Reconfiguration réussie"
+        },
+        "error": {
+            "cannot_connect": "Échec de la connexion",
+            "connection_timeout": "Délai de connexion dépassé",
+            "invalid_config": "Configuration invalide",
+            "invalid_host": "Hôte invalide",
+            "invalid_port": "Port invalide",
+            "invalid_timeout": "Délai d'attente invalide",
+            "unknown": "Erreur inattendue"
+        },
+        "step": {
+            "reconfigure": {
+                "data": {
+                    "host": "Hôte",
+                    "port": "Port",
+                    "timeout": "Délai d'attente"
+                }
+            },
+            "user": {
+                "data": {
+                    "host": "Hôte",
+                    "port": "Port",
+                    "timeout": "Délai d'attente"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "boxhumidity": {
+                "name": "Humidité du boîtier"
+            },
+            "boxtemp": {
+                "name": "Température du boîtier"
+            },
+            "phvalue": {
+                "name": "Valeur du pH"
+            },
+            "redoxvalue": {
+                "name": "Valeur redox"
+            },
+            "temp1": {
+                "name": "Température 1"
+            },
+            "temp2": {
+                "name": "Température 2"
+            },
+            "uptime": {
+                "name": "Temps de fonctionnement"
+            }
+        },
+        "switch": {
+            "pool_lights": {
+                "name": "Éclairage de la piscine"
+            },
+            "pool_pump": {
+                "name": "Pompe de piscine"
+            },
+            "relay1": {
+                "name": "Relais 1"
+            },
+            "relay2": {
+                "name": "Relais 2"
+            },
+            "relay3": {
+                "name": "Relais 3"
+            },
+            "relay4": {
+                "name": "Relais 4"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "scan_interval": "Intervalle de récupération (secondes)"
+                },
+                "description": "Modifiez vos options.",
+                "title": "Options de l'intégration BoPi"
+            }
+        }
+    },
+    "services": {
+        "refresh": {
+            "description": "Actualiser immédiatement toutes les données des capteurs BoPi depuis l'appareil",
+            "name": "Actualiser les capteurs"
+        }
+    },
+    "title": "Intégration BoPi"
+}
