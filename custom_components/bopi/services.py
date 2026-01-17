@@ -3,29 +3,31 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
+from typing import TYPE_CHECKING
 
 from homeassistant.core import HomeAssistant, ServiceCall
 
 from .const import DOMAIN, SERVICE_REFRESH
-from .coordinator import BoPiCoordinator
+
+if TYPE_CHECKING:
+    from . import RuntimeData
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_services(
-    hass: HomeAssistant, config_entry_runtime_data: Any
-) -> None:
+async def async_setup_services(hass: HomeAssistant, runtime_data: RuntimeData) -> None:
     """Set up BoPi services.
 
     Args:
     ----
         hass: Home Assistant instance.
-        config_entry_runtime_data: Runtime data containing coordinator.
+        runtime_data: Runtime data containing coordinator.
 
     """
 
-    async def handle_refresh(call: ServiceCall) -> None:  # pylint: disable=unused-argument
+    async def handle_refresh(
+        call: ServiceCall,  # pylint: disable=unused-argument
+    ) -> None:
         """Handle refresh service call.
 
         Args:
@@ -33,12 +35,13 @@ async def async_setup_services(
             call: Service call object.
 
         """
-        coordinator: BoPiCoordinator = config_entry_runtime_data.coordinator
-        await coordinator.async_request_refresh()
+        await runtime_data.coordinator.async_request_refresh()
         _LOGGER.debug("BoPi sensor refresh forced")
 
-    hass.services.async_register(
-        DOMAIN,
-        SERVICE_REFRESH,
-        handle_refresh,
-    )
+    # Only register if not already registered
+    if not hass.services.has_service(DOMAIN, SERVICE_REFRESH):
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_REFRESH,
+            handle_refresh,
+        )

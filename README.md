@@ -3,6 +3,7 @@
 [![GitHub Release](https://img.shields.io/github/release/mderasse/ha-bopi-integration.svg?style=flat-square)](https://github.com/mderasse/ha-bopi-integration/releases)
 [![GitHub Activity](https://img.shields.io/github/commit-activity/y/mderasse/ha-bopi-integration.svg?style=flat-square)](https://github.com/mderasse/ha-bopi-integration/commits/main)
 [![License](https://img.shields.io/github/license/mderasse/ha-bopi-integration.svg?style=flat-square)](LICENSE.md)
+[![HACS](https://img.shields.io/badge/HACS-Default-orange.svg?style=flat-square)](https://github.com/hacs/integration)
 
 A Home Assistant integration for [BoPi](https://meetbopi.com) swimming pool controller devices.
 
@@ -10,8 +11,8 @@ A Home Assistant integration for [BoPi](https://meetbopi.com) swimming pool cont
 
 This integration allows Home Assistant to communicate with BoPi controller devices via their local HTTP API. BoPi is a sophisticated pool automation system that monitors and controls various aspects of your swimming pool including:
 
-- **Temperature Monitoring**: Track pool and internal box temperatures
-- **Water Chemistry**: Monitor pH and redox (ORP) levels
+- **Temperature Monitoring**: Track pool water and controller internal temperatures
+- **Water Chemistry**: Monitor pH and ORP (redox) levels in real-time
 - **Equipment Control**: Control pool pump and lighting systems
 - **Relay Management**: Manage up to 4 independent relays for auxiliary equipment
 - **Environmental Monitoring**: Track internal humidity and system uptime
@@ -20,33 +21,37 @@ This integration allows Home Assistant to communicate with BoPi controller devic
 
 ### Sensors
 
-The integration exposes the following sensor entities:
+The integration provides the following sensor entities:
 
-- **Temperature Sensors**
+| Sensor | Description | Device Class | Unit |
+|--------|-------------|--------------|------|
+| Water Temperature 1 | Primary pool water temperature | Temperature | °C |
+| Water Temperature 2 | Secondary pool water temperature | Temperature | °C |
+| Controller Temperature | Internal controller temperature | Temperature | °C |
+| Controller Humidity | Internal controller humidity | Humidity | % |
+| pH Level | Pool water pH value | pH | - |
+| ORP Level | Pool water oxidation-reduction potential | - | mV |
+| Uptime | Controller uptime | Duration | seconds |
 
-  - Pool Water Temperature 1
-  - Pool Water Temperature 2
-  - Internal Box Temperature
+> **Note**: Controller temperature, controller humidity, and uptime sensors are classified as diagnostic entities.
 
-- **Chemistry Sensors**
+### Switches
 
-  - pH Level (0-14)
-  - Redox Value (0-1000 mV)
+The integration provides switch entities for equipment control:
 
-- **Environmental**
-  - Internal Box Humidity
-  - System Uptime
+| Switch | Description | Icon |
+|--------|-------------|------|
+| Pool Pump | Control the main pool pump | mdi:pump |
+| Pool Lights | Control pool lighting | mdi:lightbulb |
+| Relay 1-4 | Control auxiliary relays | mdi:electric-switch |
 
-### Binary Sensors
+> **⚠️ Important**: Switch control is **read-only** in the current version. The switches display the current state of the relays but cannot be controlled yet. Attempting to toggle a switch will show a "not implemented" error. This feature will be added in a future release when the BoPi API supports relay control.
 
-The integration provides binary sensor entities for equipment status:
+### Services
 
-- Pool Pump Status (on/off)
-- Pool Lights Status (on/off)
-- Relay 1 Status (on/off)
-- Relay 2 Status (on/off)
-- Relay 3 Status (on/off)
-- Relay 4 Status (on/off)
+| Service | Description |
+|---------|-------------|
+| `bopi.refresh` | Immediately refresh all sensor data from the BoPi device |
 
 ## Prerequisites
 
@@ -69,29 +74,40 @@ The integration provides binary sensor entities for equipment status:
 
 1. Download the latest release from [GitHub Releases](https://github.com/mderasse/ha-bopi-integration/releases)
 2. Extract the archive
-3. Copy the `bopi` folder to your Home Assistant `custom_components` directory
+3. Copy the `custom_components/bopi` folder to your Home Assistant `custom_components` directory
 4. Restart Home Assistant
 
 ## Configuration
 
-### Setup via UI
+### Initial Setup
 
 1. Go to **Settings** → **Devices & Services** → **Integrations**
-2. Click **Create Integration**
+2. Click **+ Add Integration**
 3. Search for "BoPi"
 4. Enter your BoPi device details:
    - **Host**: IP address or hostname of your BoPi device (e.g., `192.168.1.100`)
-   - **Port**: API port (default: `80`)
-   - **Timeout**: Request timeout in seconds (default: `30`)
-5. Click **Create**
+   - **Port**: API port (default: `80`, valid range: 1-65535)
+   - **Timeout**: Request timeout in seconds (default: `30`, valid range: 1-300)
+5. Click **Submit**
 
 ### Configuration Options
 
-After setup, you can adjust:
+After setup, you can configure additional options:
 
-- **Scan Interval**: How often to poll the BoPi device (minimum 60 seconds, default 60 seconds)
+| Option | Description | Default | Range |
+|--------|-------------|---------|-------|
+| Update Interval | How often to poll the BoPi device | 60 seconds | 60+ seconds |
 
-Go to **Settings** → **Devices & Services** → **BoPi** → **Options** to modify.
+To modify options: **Settings** → **Devices & Services** → **BoPi** → **Configure**
+
+### Reconfiguration
+
+To update connection settings without removing the integration:
+
+1. Go to **Settings** → **Devices & Services** → **BoPi**
+2. Click the three-dot menu (⋮)
+3. Select **Reconfigure**
+4. Update the settings as needed
 
 ## Supported Devices
 
@@ -106,36 +122,33 @@ For more information about BoPi devices, visit [meetbopi.com](https://meetbopi.c
 - Verify the BoPi device is powered on and connected to the network
 - Check that the host IP address is correct
 - Ensure the BoPi API port is accessible from your Home Assistant instance
-- Check firewall rules - ensure port 80 (or your configured port) is not blocked
+- Check firewall rules - ensure the configured port is not blocked
+- Try increasing the timeout value if you have a slow network
 
 ### Sensors Show Unavailable
 
 - Check your network connection to the BoPi device
 - Verify the device is responding to API requests
 - Check the Home Assistant logs for error messages
-- Try increasing the timeout value in configuration
+- Try using the `bopi.refresh` service to force a data update
 
-### Temperature/Chemistry Sensors Always Null
+### Temperature/Chemistry Sensors Show Unknown
 
-- These sensors are expected to be null if the corresponding physical sensor is disconnected from the BoPi device
+- These sensors will be `unknown` if the corresponding physical sensor is disconnected from the BoPi device
 - Check BoPi device configuration to ensure sensors are properly connected
-- Temperature value -127 indicates a disconnected sensor and is displayed as unavailable
+- A temperature value of -127°C typically indicates a disconnected temperature sensor
+
+### High CPU/Network Usage
+
+- The minimum scan interval is 60 seconds to prevent overloading the device
+- If you need more frequent updates for specific scenarios, use the `bopi.refresh` service
 
 ## Entity Categories
 
-Entities follow Home Assistant entity category best practices:
+Entities follow Home Assistant best practices:
 
-- Sensor entities are automatically categorized based on their type (diagnostic for uptime, none for measurements)
-- Binary sensor entities use the appropriate device class for proper UI representation
-
-## Integration Quality Scale
-
-This integration is currently at the **Bronze** quality level, supporting:
-
-- ✅ Config flow with UI configuration
-- ✅ Entity unique IDs for proper tracking
-- ✅ Device information with proper associations
-- ✅ Basic error handling and validation
+- **Diagnostic entities**: Controller temperature, controller humidity, and uptime (hidden by default in entity lists)
+- **Primary entities**: All water quality sensors and control switches
 
 ## Development
 
@@ -147,27 +160,33 @@ This integration is currently at the **Bronze** quality level, supporting:
 
 ### Project Structure
 
-```
+\`\`\`
 custom_components/bopi/
 ├── __init__.py           # Integration setup and lifecycle
-├── config_flow.py        # UI configuration flow
+├── config_flow.py        # UI configuration and options flow
 ├── coordinator.py        # Data update coordinator
-├── const.py             # Constants and defaults
-├── sensor.py            # Sensor platform
-├── binary_sensor.py     # Binary sensor platform
-├── manifest.json        # Integration metadata
-├── strings.json         # User-facing strings and translations
-└── quality_scale.yaml   # Quality scale status tracking
-```
+├── const.py              # Constants and defaults
+├── sensor.py             # Sensor platform
+├── switch.py             # Switch platform
+├── services.py           # Service actions
+├── services.yaml         # Service definitions
+├── manifest.json         # Integration metadata
+├── strings.json          # Base strings and translations
+└── translations/         # Localized translations
+    ├── en.json
+    ├── es.json
+    └── fr.json
+\`\`\`
 
-### Testing
+### Contributing
 
-To test this integration locally:
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Clone the repository
-2. Copy the `custom_components/bopi` folder to your Home Assistant `custom_components` directory
-3. Restart Home Assistant
-4. Add the integration via UI
+1. Fork the repository
+2. Create a feature branch (\`git checkout -b feature/amazing-feature\`)
+3. Commit your changes (\`git commit -m 'Add amazing feature'\`)
+4. Push to the branch (\`git push origin feature/amazing-feature\`)
+5. Open a Pull Request
 
 ## Support
 
@@ -184,16 +203,26 @@ This project is licensed under the MIT License - see [LICENSE.md](LICENSE.md) fo
 
 This is an unofficial integration. BoPi is a registered trademark of its respective owners. This integration is not affiliated with or endorsed by BoPi.
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
 ## Changelog
 
-### Version 0.0.1
+### Version 1.1.0
+
+- Improved entity descriptions with icons
+- Added entity categories (diagnostic) for controller sensors
+- Refactored switch entities to use SwitchEntityDescription pattern
+- Added data descriptions in config flow for better UX
+- Improved translation files with full descriptions
+- Added input validation for port (1-65535) and timeout (1-300) values
+- Fixed service registration/unregistration on load/unload
+- Improved state class for uptime sensor (TOTAL_INCREASING)
+- Updated sensor names for clarity (Temperature → Water temperature)
+- Code improvements following Home Assistant guidelines
+
+### Version 1.0.0
 
 - Initial release
-- Support for temperature, humidity, pH, and redox sensors
-- Support for pool pump, pool lights, and relay binary sensors
+- Support for temperature, humidity, pH, and ORP sensors
+- Support for pool pump, pool lights, and relay switches
 - UI-based configuration flow
 - Configurable polling interval
+- Multi-language support (EN, FR, ES)

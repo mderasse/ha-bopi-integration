@@ -11,6 +11,8 @@ from dataclasses import dataclass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+
+from .const import DOMAIN, SERVICE_REFRESH
 from .coordinator import BoPiCoordinator
 from .services import async_setup_services
 
@@ -18,14 +20,15 @@ _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.SWITCH]
 
-type BoPiConfigEntry = ConfigEntry[RuntimeData]
-
 
 @dataclass
 class RuntimeData:
     """Class to hold bopi runtime data."""
 
     coordinator: BoPiCoordinator
+
+
+type BoPiConfigEntry = ConfigEntry[RuntimeData]
 
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: BoPiConfigEntry) -> bool:
@@ -71,7 +74,8 @@ async def _async_update_listener(
 
     """
     coordinator: BoPiCoordinator = config_entry.runtime_data.coordinator
-    coordinator.update_interval = coordinator._get_update_interval()  # pylint: disable=protected-access
+    # pylint: disable-next=protected-access
+    coordinator.update_interval = coordinator._get_update_interval()
 
 
 async def async_unload_entry(
@@ -89,4 +93,13 @@ async def async_unload_entry(
         True if unload successful.
 
     """
-    return await hass.config_entries.async_unload_platforms(config_entry, PLATFORMS)
+    # Unload platforms first
+    unload_ok = await hass.config_entries.async_unload_platforms(
+        config_entry, PLATFORMS
+    )
+
+    # Unload services
+    if unload_ok:
+        hass.services.async_remove(DOMAIN, SERVICE_REFRESH)
+
+    return unload_ok

@@ -1,65 +1,105 @@
 {
+    "title": "Intégration BoPi",
     "config": {
         "abort": {
-            "already_configured": "L'intégration est déjà configuré",
+            "already_configured": "L'appareil est déjà configuré",
             "reconfigure_successful": "Reconfiguration réussie"
         },
         "error": {
             "cannot_connect": "Échec de la connexion",
-            "connection_timeout": "Délai de connexion dépassé",
-            "invalid_config": "Configuration invalide",
-            "invalid_host": "Hôte invalide",
-            "invalid_port": "Port invalide",
-            "invalid_timeout": "Délai d'attente invalide",
+            "connection_timeout": "Délai de connexion dépassé lors de la tentative de connexion à l'appareil BoPi",
+            "invalid_config": "Configuration fournie invalide",
+            "invalid_host": "L'adresse hôte est invalide",
+            "invalid_port": "Le numéro de port doit être compris entre 1 et 65535",
+            "invalid_timeout": "Le délai d'attente doit être compris entre 1 et 300 secondes",
             "unknown": "Erreur inattendue"
         },
         "step": {
             "reconfigure": {
+                "title": "Reconfigurer BoPi",
+                "description": "Mettez à jour les paramètres de connexion de votre appareil BoPi.",
                 "data": {
                     "host": "Hôte",
                     "port": "Port",
                     "timeout": "Délai d'attente"
+                },
+                "data_description": {
+                    "host": "Adresse IP ou nom d'hôte de votre appareil BoPi",
+                    "port": "Port de l'API HTTP (par défaut : 80)",
+                    "timeout": "Délai d'attente des requêtes en secondes (1-300)"
                 }
             },
             "user": {
+                "title": "Connexion à BoPi",
+                "description": "Entrez les détails de connexion de votre contrôleur de piscine BoPi.",
                 "data": {
                     "host": "Hôte",
                     "port": "Port",
                     "timeout": "Délai d'attente"
+                },
+                "data_description": {
+                    "host": "Adresse IP ou nom d'hôte de votre appareil BoPi (ex : 192.168.1.100)",
+                    "port": "Port de l'API HTTP (par défaut : 80)",
+                    "timeout": "Délai d'attente des requêtes en secondes (par défaut : 30)"
                 }
             }
         }
     },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Options BoPi",
+                "description": "Configurez les options de sondage et de comportement pour l'intégration BoPi.",
+                "data": {
+                    "scan_interval": "Intervalle de mise à jour"
+                },
+                "data_description": {
+                    "scan_interval": "Fréquence de sondage de l'appareil BoPi pour les mises à jour (en secondes, minimum 60)"
+                }
+            }
+        }
+    },
+    "services": {
+        "refresh": {
+            "name": "Actualiser les capteurs",
+            "description": "Actualise immédiatement toutes les données des capteurs BoPi depuis l'appareil sans attendre la prochaine mise à jour planifiée."
+        }
+    },
+    "exceptions": {
+        "switch_control_not_implemented": {
+            "message": "Le contrôle des interrupteurs n'est pas encore implémenté. L'API BoPi ne prend pas en charge le contrôle des relais actuellement."
+        }
+    },
     "entity": {
         "sensor": {
-            "boxhumidity": {
-                "name": "Humidité du boîtier"
-            },
-            "boxtemp": {
-                "name": "Température du boîtier"
-            },
-            "phvalue": {
-                "name": "Valeur du pH"
-            },
-            "redoxvalue": {
-                "name": "Valeur redox"
-            },
             "temp1": {
-                "name": "Température 1"
+                "name": "Température de l'eau 1"
             },
             "temp2": {
-                "name": "Température 2"
+                "name": "Température de l'eau 2"
+            },
+            "boxtemp": {
+                "name": "Température du contrôleur"
+            },
+            "boxhumidity": {
+                "name": "Humidité du contrôleur"
+            },
+            "phvalue": {
+                "name": "Niveau de pH"
+            },
+            "redoxvalue": {
+                "name": "Niveau ORP"
             },
             "uptime": {
                 "name": "Temps de fonctionnement"
             }
         },
         "switch": {
-            "pool_lights": {
-                "name": "Éclairage de la piscine"
-            },
             "pool_pump": {
                 "name": "Pompe de piscine"
+            },
+            "pool_lights": {
+                "name": "Éclairage de la piscine"
             },
             "relay1": {
                 "name": "Relais 1"
@@ -74,23 +114,5 @@
                 "name": "Relais 4"
             }
         }
-    },
-    "options": {
-        "step": {
-            "init": {
-                "data": {
-                    "scan_interval": "Intervalle de récupération (secondes)"
-                },
-                "description": "Modifiez vos options.",
-                "title": "Options de l'intégration BoPi"
-            }
-        }
-    },
-    "services": {
-        "refresh": {
-            "description": "Actualiser immédiatement toutes les données des capteurs BoPi depuis l'appareil",
-            "name": "Actualiser les capteurs"
-        }
-    },
-    "title": "Intégration BoPi"
+    }
 }

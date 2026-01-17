@@ -11,8 +11,8 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
+    EntityCategory,
     PERCENTAGE,
     UnitOfTemperature,
     UnitOfTime,
@@ -24,6 +24,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from . import BoPiConfigEntry
 from .const import DOMAIN
 from .coordinator import BoPiCoordinator
 
@@ -35,6 +36,7 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:thermometer-water",
     ),
     SensorEntityDescription(
         key="temp2",
@@ -42,6 +44,7 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:thermometer-water",
     ),
     SensorEntityDescription(
         key="boxtemp",
@@ -49,6 +52,8 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        icon="mdi:thermometer",
     ),
     SensorEntityDescription(
         key="boxhumidity",
@@ -56,6 +61,8 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.HUMIDITY,
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        icon="mdi:water-percent",
     ),
     SensorEntityDescription(
         key="phvalue",
@@ -63,26 +70,30 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.PH,
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=2,
+        icon="mdi:ph",
     ),
     SensorEntityDescription(
         key="redoxvalue",
         translation_key="redoxvalue",
         native_unit_of_measurement=UnitOfElectricPotential.MILLIVOLT,
         state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:flash",
     ),
     SensorEntityDescription(
         key="uptime",
         translation_key="uptime",
         device_class=SensorDeviceClass.DURATION,
         native_unit_of_measurement=UnitOfTime.SECONDS,
-        state_class=SensorStateClass.MEASUREMENT,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        icon="mdi:timer-outline",
     ),
 )
 
 
 async def async_setup_entry(
     hass: HomeAssistant,  # pylint: disable=unused-argument
-    config_entry: ConfigEntry,
+    config_entry: BoPiConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up BoPi sensor entities.
@@ -94,7 +105,7 @@ async def async_setup_entry(
         async_add_entities: Callback to add new entities.
 
     """
-    coordinator: BoPiCoordinator = config_entry.runtime_data.coordinator
+    coordinator = config_entry.runtime_data.coordinator
 
     async_add_entities(
         BoPiSensor(coordinator, description) for description in SENSOR_DESCRIPTIONS

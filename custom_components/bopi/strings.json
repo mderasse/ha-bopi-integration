@@ -3,30 +3,44 @@
     "config": {
         "abort": {
             "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
-            "reconfigure_successful": "Reconfiguration successful"
+            "reconfigure_successful": "[%key:common::config_flow::abort::reconfigure_successful%]"
         },
         "error": {
             "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
-            "connection_timeout": "Connection Timeout",
-            "invalid_config": "Invalid configuration",
-            "invalid_host": "Invalid host",
-            "invalid_port": "Invalid port",
-            "invalid_timeout": "Invalid timeout",
+            "connection_timeout": "Connection timed out while trying to reach the BoPi device",
+            "invalid_config": "Invalid configuration provided",
+            "invalid_host": "The host address is invalid",
+            "invalid_port": "The port number must be between 1 and 65535",
+            "invalid_timeout": "The timeout value must be between 1 and 300 seconds",
             "unknown": "[%key:common::config_flow::error::unknown%]"
         },
         "step": {
             "reconfigure": {
+                "title": "Reconfigure BoPi",
+                "description": "Update the connection settings for your BoPi device.",
                 "data": {
                     "host": "[%key:common::config_flow::data::host%]",
                     "port": "[%key:common::config_flow::data::port%]",
                     "timeout": "Timeout"
+                },
+                "data_description": {
+                    "host": "IP address or hostname of your BoPi device",
+                    "port": "HTTP API port (default: 80)",
+                    "timeout": "Request timeout in seconds (1-300)"
                 }
             },
             "user": {
+                "title": "Connect to BoPi",
+                "description": "Enter the connection details for your BoPi pool controller.",
                 "data": {
                     "host": "[%key:common::config_flow::data::host%]",
                     "port": "[%key:common::config_flow::data::port%]",
                     "timeout": "Timeout"
+                },
+                "data_description": {
+                    "host": "IP address or hostname of your BoPi device (e.g., 192.168.1.100)",
+                    "port": "HTTP API port (default: 80)",
+                    "timeout": "Request timeout in seconds (default: 30)"
                 }
             }
         }
@@ -34,39 +48,47 @@
     "options": {
         "step": {
             "init": {
+                "title": "BoPi Options",
+                "description": "Configure polling and behavior options for the BoPi integration.",
                 "data": {
-                    "scan_interval": "Scan Interval (seconds)"
+                    "scan_interval": "Update interval"
                 },
-                "description": "Amend your options.",
-                "title": "BoPi Integration Options"
+                "data_description": {
+                    "scan_interval": "How often to poll the BoPi device for updates (in seconds, minimum 60)"
+                }
             }
         }
     },
     "services": {
         "refresh": {
             "name": "Refresh sensors",
-            "description": "Immediately refresh all BoPi sensor data from the device"
+            "description": "Immediately refresh all BoPi sensor data from the device without waiting for the next scheduled update."
+        }
+    },
+    "exceptions": {
+        "switch_control_not_implemented": {
+            "message": "Switch control is not yet implemented. The BoPi API does not currently support relay control."
         }
     },
     "entity": {
         "sensor": {
             "temp1": {
-                "name": "Temperature 1"
+                "name": "Water temperature 1"
             },
             "temp2": {
-                "name": "Temperature 2"
+                "name": "Water temperature 2"
             },
             "boxtemp": {
-                "name": "Box temperature"
+                "name": "Controller temperature"
             },
             "boxhumidity": {
-                "name": "Box humidity"
+                "name": "Controller humidity"
             },
             "phvalue": {
-                "name": "pH value"
+                "name": "pH level"
             },
             "redoxvalue": {
-                "name": "Redox value"
+                "name": "ORP level"
             },
             "uptime": {
                 "name": "Uptime"

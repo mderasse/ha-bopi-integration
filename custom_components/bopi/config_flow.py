@@ -24,11 +24,20 @@ _LOGGER = logging.getLogger(__name__)
 
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_HOST, description={"suggested_value": "10.10.10.1"}): str,
-        vol.Required(CONF_PORT, description={"suggested_value": 80}, default=80): int,
+        vol.Required(
+            CONF_HOST,
+            description={"suggested_value": "10.10.10.1"},
+        ): str,
+        vol.Required(
+            CONF_PORT,
+            description={"suggested_value": 80},
+            default=80,
+        ): vol.All(vol.Coerce(int), vol.Range(min=1, max=65535)),
         vol.Optional(
-            CONF_TIMEOUT, description={"suggested_value": 30}, default=30
-        ): int,
+            CONF_TIMEOUT,
+            description={"suggested_value": 30},
+            default=30,
+        ): vol.All(vol.Coerce(int), vol.Range(min=1, max=300)),
     }
 )
 
@@ -41,7 +50,10 @@ RECONFIGURE_DATA_SCHEMA = vol.Schema(
 )
 
 
-async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str, Any]:  # pylint: disable=unused-argument
+async def validate_input(
+    hass: HomeAssistant,  # pylint: disable=unused-argument
+    data: dict[str, Any],
+) -> dict[str, Any]:
     """Validate the user input allows us to connect.
 
     Data has the keys from STEP_USER_DATA_SCHEMA with values provided by the user.
@@ -212,9 +224,8 @@ class BoPiOptionsFlowHandler(OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        # It is recommended to prepopulate options fields with default values if available.
-        # These will be the same default values you use on your coordinator for setting variable values
-        # if the option has not been set.
+        # Prepopulate options fields with default values if available.
+        # These are the same default values used on the coordinator.
         data_schema = vol.Schema(
             {
                 vol.Required(
